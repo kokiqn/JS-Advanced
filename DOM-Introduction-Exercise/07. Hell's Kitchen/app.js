@@ -3,46 +3,43 @@ function solve() {
 
    function onClick() {
       let inputValue = JSON.parse(document.querySelector('#inputs textarea').value);
-      let bestRestaurantOutputElement = document.querySelector('#bestRestaurant p');
+      let bestRestaurantOutput = document.querySelector('#bestRestaurant p');
       let workersOutputElement = document.querySelector('#workers p');
-      let restaurantsArray = [];
+      let restaurants = [];
 
-      inputValue.forEach(el => createRestaurant(el.split(' - ')));
-      compareAndAssign(restaurantsArray);
+      inputValue.forEach(rest => createRestaurant(rest.split(' - ')));
+      compareAndAssign(restaurants);
 
       function createRestaurant(restaurant) {
          let restaurantName = restaurant.shift();
          let employees = restaurant.pop().split(', ');
 
          let obj = {
-            restaurantName,
-            employees: [],
+            restaurantName, employees: [],
             getEmployee(employee) {
                let [name, salary] = employee.split(' ');
-               let employeeObj = { name, salary: Number(salary) }
+               let employeeObj = { name, salary: Number(salary) };
                this.employees.push(employeeObj);
             },
             getBestSalary() {
                return this.employees[0].salary;
             },
             getAvgSalary() {
-               let avg = 0;
-               this.employees.forEach(e => avg += e.salary);
+               let avg = this.employees.reduce((a, x) => a += x.salary, 0);
                return avg / this.employees.length;
             }
-         }
+         };
 
          while (employees.length) {
             let employee = employees.shift();
             obj.getEmployee(employee);
          }
-         obj.employees.sort((a, b) => b.salary - a.salary);
-         restaurantsArray.push(obj);
+         restaurants.push(obj);
 
-         for (let i = 0; i < restaurantsArray.length - 1; i++) {
-            if (restaurantName === restaurantsArray[i].restaurantName) {
-               Object.assign(restaurantsArray[i], obj);
-               restaurantsArray.pop();
+         for (let i = 0; i < restaurants.length - 1; i++) {
+            if (restaurantName === restaurants[i].restaurantName) {
+               restaurants[i].employees = Object.values(restaurants[i])[1].concat(obj.employees);
+               restaurants.pop();
             }
          }
       };
@@ -50,9 +47,12 @@ function solve() {
       function compareAndAssign(restaurants) {
          let best = restaurants[0];
          restaurants.forEach(r => {
+            r.employees.sort((a, b) => b.salary - a.salary)
             if (r.getAvgSalary() > best.getAvgSalary()) best = r;
-         })
-         bestRestaurantOutputElement.textContent = `Name: ${best.restaurantName} Average Salary: ${best.getAvgSalary().toFixed(2)} Best Salary: ${best.getBestSalary().toFixed(2)}`;
+         });
+
+         bestRestaurantOutput.textContent =
+            `Name: ${best.restaurantName} Average Salary: ${best.getAvgSalary().toFixed(2)} Best Salary: ${best.getBestSalary().toFixed(2)}`;
          best.employees.forEach(e => workersOutputElement.textContent += `Name: ${e.name} With Salary: ${e.salary} `);
       }
    }
