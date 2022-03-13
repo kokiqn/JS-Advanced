@@ -1,8 +1,8 @@
 function lockedProfile() {
-    let showMoreButtons = [...document.querySelectorAll('button')];
-    showMoreButtons.forEach(btn => btn.addEventListener('click', toggleFields));
+    let main = document.querySelector('main'); // can also be done by adding an event listener to each button
+    main.addEventListener('click', (e) => {
+        if (e.target.nodeName != 'BUTTON') return;
 
-    function toggleFields(e) {
         let button = e.target;
         let currentProfile = button.parentElement;
         let isLocked = currentProfile.querySelector('input[type="radio"]').checked;
@@ -17,5 +17,5 @@ function lockedProfile() {
             hiddenFields.style.display = '';
             button.textContent = 'Show more';
         }
-    }
+    })
 }
