@@ -9,15 +9,15 @@ describe('Test functionallity of isOddOrEven', () => {
         assert.isUndefined(isOddOrEven(NaN));
     });
 
-    it('returns even or odd according to the length of the string', () => {
+    it('returns even if length is an even number', () => {
         assert.equal(isOddOrEven('even'), 'even');
-        assert.equal(isOddOrEven('odd'), 'odd');
+        assert.equal(isOddOrEven('eleven'), 'even');
         assert.equal(isOddOrEven('no'), 'even');
-        assert.equal(isOddOrEven('yes'), 'odd');
     });
 
-    it('should not return incorrect output', () => {
-        assert.notEqual(isOddOrEven('cat', 'even'));
-        assert.notEqual(isOddOrEven('mice', 'odd'));
+    it('returns odd if length is an odd number', () => {
+        assert.equal(isOddOrEven('odd'), 'odd');
+        assert.equal(isOddOrEven('seven'), 'odd');
+        assert.equal(isOddOrEven('yes'), 'odd');
     });
 });
